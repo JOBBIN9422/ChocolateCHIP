@@ -1,2 +1,2 @@
 # ChocolateCHIP
-CHIP emulator in C#
+CHIP-8 emulator in C# (not sure if this is really gonna get anywhere yet UwU)
