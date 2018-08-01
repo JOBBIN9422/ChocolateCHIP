@@ -236,11 +236,11 @@ namespace ChocolateCHIP
             ushort currOpcode = (ushort)((memory[programCounter] << 8) | memory[programCounter + 1]);
             debugInfo += String.Format("OP = {0:X4}{1}", currOpcode, Environment.NewLine);
 
-            debugInfo += String.Format("{0}Registers{1}---------------------{2}", Environment.NewLine, Environment.NewLine, Environment.NewLine);
+            debugInfo += String.Format("{0}Registers | Stack{1}---------------------{2}", Environment.NewLine, Environment.NewLine, Environment.NewLine);
 
             for (int i = 0; i < 16; i++)
             {
-                debugInfo += String.Format("V[{0:X}] = {1:X4}{2}", i, vRegisters[i], Environment.NewLine);
+                debugInfo += String.Format("V[{0:X}] = {1:X2} | S[{2:X}] = {3:X4}{4}", i, vRegisters[i], i, stack[i], Environment.NewLine);
             }
             return debugInfo;
         }
