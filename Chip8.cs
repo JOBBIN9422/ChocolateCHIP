@@ -17,11 +17,17 @@ namespace ChocolateCHIP
         private ushort delayTimer;
         private ushort soundTimer;
 
+        private uint clockSpeedHz;
+        private uint timerInterval;
+        private ulong cycleCount;
+
         private bool drawFlag;
 
         private Random random;
 
-        private Bitmap testBitmap;
+        private Bitmap frameBitmap;
+
+        private string currFileName;
 
         private ushort[] stack;
         private byte[] memory;
@@ -70,7 +76,13 @@ namespace ChocolateCHIP
 
         public Chip8()
         {
-            //4K of memory (interpreter, fonts, program ROM, and RAM)
+            random = new Random();
+            currFileName = String.Empty;
+            this.clockSpeedHz = 500;
+            this.cycleCount = 0;
+            this.timerInterval = clockSpeedHz / 60;
+
+            //4K of memory
             this.memory = new byte[4096];
 
             //stack has 16 16-bit values 
@@ -79,59 +91,90 @@ namespace ChocolateCHIP
             //16 8-bit registers 
             this.vRegisters = new byte[16];
 
+            //64x32 resolution
             this.frame = new byte[64 * 32];
 
             this.keyStates = new byte[16];
-            this.testBitmap = new Bitmap(64, 32);
+            this.frameBitmap = new Bitmap(64, 32);
         }
 
         public void Initialize()
-        {
-            random = new Random();
-
-            programCounter = 0x200; //start PC at program start address
+        {   
             opcode = 0;
             index = 0;
             stackPointer = 0;
             delayTimer = 0;
             soundTimer = 0;
 
-            //load font set into memory (address 0x50 - 0x0A0)
-            //for (int i = 80; i < 160; i++)
+            //load font set into memory
             for (int i = 0; i < 80; i++)
             {
-                //memory[i] = fontSet[i - 80];
                 memory[i] = fontSet[i];
             }
 
+            programCounter = 0x200; //start PC at ROM start address
             drawFlag = true; 
+        }
+
+        public void Reset()
+        {
+            this.memory = new byte[4096];
+            this.stack = new ushort[16]; 
+            this.vRegisters = new byte[16];
+            this.frame = new byte[64 * 32];
+            this.keyStates = new byte[16];
+            this.frameBitmap = new Bitmap(64, 32);
+
+            //reload font set
+            for (int i = 0; i < 80; i++)
+            {
+                memory[i] = fontSet[i];
+            }
+
+            opcode = 0;
+            index = 0;
+            stackPointer = 0;
+            delayTimer = 0;
+            soundTimer = 0;
+
+            programCounter = 0x200; 
+            drawFlag = true;
         }
 
         public void LoadROM(string fileName)
         {
+            currFileName = fileName;
             MemoryStream ROMStream = new MemoryStream();
-            //FileStream inputFS = new FileStream(fileName, FileMode.Open);
-            //inputFS.CopyTo(ROMStream);
 
             using (var inputStream = File.Open(fileName, FileMode.Open))
             {
                 inputStream.CopyTo(ROMStream);
             }
 
-                byte[] ROMDump = ROMStream.ToArray();
+            //copy rom byte-wise into array
+            byte[] ROMDump = ROMStream.ToArray();
 
             for (int i = 0; i < ROMDump.Count(); i++)
             {
-                Console.WriteLine("ROM [{0:X}] = {1:X}", i, ROMDump[i]);
-
                 //copy ROM into memory at program starting address
                 memory[i + 0x200] = ROMDump[i];
+                Console.WriteLine("ROM[{0:X4}] = {1:X4}\tMEM[{2:X4}] = {3:X4}", i, ROMDump[i], i + 0x200, memory[i + 0x200]);
             }
+        }
+
+        public uint GetClockSpeedHz()
+        {
+            return clockSpeedHz;
+        }
+
+        public void SetClockSpeedHz(uint clockSpeed)
+        {
+            this.clockSpeedHz = clockSpeed;
         }
 
         public Bitmap GetFrame()
         {
-            return testBitmap;
+            return frameBitmap;
         }
 
         public bool GetDrawFlag()
@@ -144,7 +187,14 @@ namespace ChocolateCHIP
             this.drawFlag = drawFlag;
         }
 
-        public void DebugRender()
+        public string GetFileName()
+        {
+            return currFileName;
+        }
+
+
+        //export the current frame data to a b&w bitmap 
+        public void RenderToBitmap()
         {
             for (int y = 0; y < 32; y++)
             {
@@ -152,33 +202,50 @@ namespace ChocolateCHIP
                 {
                     if (frame[(y * 64) + x] == 0)
                     {
-                        //Console.Write(0);
-                        testBitmap.SetPixel(x, y, Color.Black);
+                        frameBitmap.SetPixel(x, y, Color.Black);
                     }
                     else
                     {
-                        //Console.Write(" ");
-                        testBitmap.SetPixel(x, y, Color.White);
+                        frameBitmap.SetPixel(x, y, Color.White);
                     }
                 }
-                //Console.WriteLine();
             }
-            //Console.WriteLine();
         }
 
+        //dump the contents of memory to the console 
         public void printMemory()
         {
             for (int i = 0; i < memory.Count(); i++)
             {
-                Console.WriteLine("mem [{0:X}] = {1:X}", i, memory[i]);
+                Console.WriteLine("mem [{0:X4}] = {1:X4}", i, memory[i]);
             }
         }
 
-        public void EmulationLoop()
+        //fetch data at the requested address in memory 
+        public byte GetByteAtAddr(ushort addr)
         {
-
+            return Convert.ToByte(memory[addr]);
         }
 
+        //return a string containing information about the CPU/memory 
+        public string GetDebugInfo()
+        {
+            string debugInfo = String.Empty;
+            debugInfo += String.Format("PC = {0:X4}{1}SP = {2:X4}{3}I  = {4:X4}{5}", programCounter, Environment.NewLine, stackPointer, Environment.NewLine, index, Environment.NewLine);
+
+            ushort currOpcode = (ushort)((memory[programCounter] << 8) | memory[programCounter + 1]);
+            debugInfo += String.Format("OP = {0:X4}{1}", currOpcode, Environment.NewLine);
+
+            debugInfo += String.Format("{0}Registers{1}---------------------{2}", Environment.NewLine, Environment.NewLine, Environment.NewLine);
+
+            for (int i = 0; i < 16; i++)
+            {
+                debugInfo += String.Format("V[{0:X}] = {1:X4}{2}", i, vRegisters[i], Environment.NewLine);
+            }
+            return debugInfo;
+        }
+
+        //Update the key state registers based on key presses
         public void PollKeys()
         {
             for (int i = 0; i < keyBindings.Count(); i++)
@@ -206,11 +273,11 @@ namespace ChocolateCHIP
         //pre-decrements the stack and sets the PC to the address at the top of stack
         public void Return()
         {
-            
             programCounter = stack[stackPointer];
             stackPointer--;
         }
 
+        //Overwrite the PC with the requested address
         public void JumpToAddr(ushort jumpAddr)
         {
             this.programCounter = jumpAddr;
@@ -225,9 +292,9 @@ namespace ChocolateCHIP
         //stores current PC on stack and jumps to subroutine address
         public void CallSubroutine(ushort subAddr)
         {
+
             stackPointer++;
             stack[stackPointer] = programCounter; //store current addr on stack
-            
             programCounter = subAddr; //set program counter to subroutine address
         }
 
@@ -297,10 +364,10 @@ namespace ChocolateCHIP
             byte value = ((byte)(data & 0x00FF));
 
             vRegisters[regIndex] = value;
-            //programCounter += 2;
         }
 
-        public void setIndexAddr(ushort addr)
+        //sets the index register to the requested address
+        public void SetIndexAddr(ushort addr)
         {
             index = addr;
         }
@@ -344,6 +411,7 @@ namespace ChocolateCHIP
             vRegisters[regXIndex] = (byte)(vRegisters[regXIndex] & vRegisters[regYIndex]);
         }
 
+        //assign random number bitwise-ANDed with value to regs[X] 
         public void RegisterANDRandom(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
@@ -368,8 +436,9 @@ namespace ChocolateCHIP
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             byte regYIndex = (byte)((data & 0x00F0) >> 4);
 
-            ushort sum = (ushort)(vRegisters[regXIndex] + vRegisters[regYIndex]);
+            short sum = (short)(vRegisters[regXIndex] + vRegisters[regYIndex]);
 
+            //check for carry-out
             if (sum > 255)
             {
                 vRegisters[15] = 1;
@@ -389,8 +458,10 @@ namespace ChocolateCHIP
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             byte regYIndex = (byte)((data & 0x00F0) >> 4);
 
-            ushort diff = (ushort)(vRegisters[regXIndex] - vRegisters[regYIndex]);
+            //short must be signed to prevent underflow
+            short diff = (short)(vRegisters[regXIndex] - vRegisters[regYIndex]);
 
+            //check for borrow
             if (diff < 0)
             {
                 vRegisters[15] = 0;
@@ -410,7 +481,7 @@ namespace ChocolateCHIP
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             byte regYIndex = (byte)((data & 0x00F0) >> 4);
 
-            ushort diff = (ushort)(vRegisters[regYIndex] - vRegisters[regXIndex]);
+            short diff = (short)(vRegisters[regYIndex] - vRegisters[regXIndex]);
 
             if (diff < 0)
             {
@@ -450,48 +521,55 @@ namespace ChocolateCHIP
             vRegisters[regXIndex] = (byte)(vRegisters[regXIndex] << 1);
         }
 
+        //store the value of the delay timer to the requested register
         public void SetRegToDelayTimer(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             vRegisters[regXIndex] = (byte)delayTimer;
         }
 
+        //add the value in the requested register to the index register
         public void AddToIndex(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             index += vRegisters[regXIndex];
         }
 
+        //set the index register's value to the value in the requested register
         public void SetIndex(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             index = (ushort)(vRegisters[regXIndex] * 0x5);
         }
 
+        //set the delay timer's value to the value in the requested register
         public void SetDelayTimer(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             delayTimer = (ushort)vRegisters[regXIndex];
         }
 
+        //set the sound timer's value to the value in the requested register
         public void SetSoundTimer(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             soundTimer = (ushort)vRegisters[regXIndex];
         }
 
+        //store BCD representation of value at requested register to memory starting at index address
         public void StoreBCD(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             byte regXValue = vRegisters[regXIndex];
 
-            for (int i = 3; i > 0; i++)
+            for (int i = 3; i > 0; i--)
             {
                 memory[index + i - 1] = (byte)(regXValue % 10);
                 regXValue /= 10;
             }
         }
 
+        //store registers from index 0 to requested index in memory starting at index address
         public void StoreRegisters(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
@@ -504,6 +582,7 @@ namespace ChocolateCHIP
             //index += (ushort)(regXIndex + 1);
         }
 
+        //load from memory into registers in range [index, index + requested value]
         public void LoadIntoRegisters(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
@@ -536,11 +615,16 @@ namespace ChocolateCHIP
                 {
                     if ((pixel & (0x80 >> x)) != 0)
                     {
+                        ushort position = (ushort)((xCoord + x + ((yCoord + y) * 64)) % 2048);
+                        vRegisters[15] |= (frame[position] == 1) ? (byte)1 : (byte)0;
+                        frame[position] ^= 1;
+                        /*
                         if (frame[(xCoord + x + ((yCoord + y) * 64))] == 1)
                         {
                             vRegisters[15] = 1;
                         }
                         frame[(xCoord + x + ((yCoord + y) * 64))] ^= 1;
+                        */
                     }
                 }
             }
@@ -572,11 +656,13 @@ namespace ChocolateCHIP
             }
         }
 
+        //suspend execution until any key is pressed 
         public void WaitForKey(ushort data)
         {
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             bool keyPressed = false;
 
+            //poll key state registers 
             for (int i = 0; i < 16; i++)
             {
                 if (keyStates[i] != 0)
@@ -588,6 +674,7 @@ namespace ChocolateCHIP
 
             if (!keyPressed)
             {
+                //suspend by rolling back the program counter on each cycle
                 programCounter -= 2;
                 return;
             }
@@ -599,7 +686,7 @@ namespace ChocolateCHIP
             PollKeys();
             //fetch the current opcode indicated by the PC (opcodes are 2 bytes long so we must fetch 2 values)
             opcode = (ushort)((memory[programCounter] << 8) | memory[programCounter + 1]);
-            Console.WriteLine("opcode = {0:X}", opcode);
+            //Console.WriteLine("opcode = {0:X4}", opcode);
             ushort instrData = (ushort)(opcode & 0x0FFF);
 
             //prepare to read next instruction
@@ -623,7 +710,7 @@ namespace ChocolateCHIP
                             break;
 
                         default:
-                            Console.WriteLine("ERROR: unknown opcode: {0:X}", opcode);
+                            Console.WriteLine("ERROR: unknown opcode: {0:X4}", opcode);
                             break;
                     }
 
@@ -704,7 +791,7 @@ namespace ChocolateCHIP
                             RegisterLSL(instrData);
                             break;
                         default:
-                            Console.WriteLine("ERROR: unknown opcode: {0:X}", opcode);
+                            Console.WriteLine("ERROR: unknown opcode: {0:X4}", opcode);
                             break;
                     }
                     break;
@@ -716,7 +803,7 @@ namespace ChocolateCHIP
 
                 //OPCODE RANGE 0xA___
                 case 0xA000: // 0xANNN - sets index to address NNN
-                    setIndexAddr(instrData);
+                    SetIndexAddr(instrData);
                     break;
 
                 //OPCODE RANGE 0xB___
@@ -747,13 +834,13 @@ namespace ChocolateCHIP
                             break;
 
                         default:
-                            Console.WriteLine("ERROR: unknown opcode: {0:X}", opcode);
+                            Console.WriteLine("ERROR: unknown opcode: {0:X4}", opcode);
                             break;
                     }
                     break;
 
                 //OPCODE RANGE 0xF___
-                case 0xF0000:
+                case 0xF000:
                     switch (opcode & 0xFF)
                     {
                         case 0x0007: //0xFX07 - regs[X] = delayTimer
@@ -789,9 +876,20 @@ namespace ChocolateCHIP
                             break;
 
                         case 0x0065: //0xFX65 - read from memory into regs[0] to regs[X] starting at index
+                            LoadIntoRegisters(instrData);
                             break;
                     }
                     break;
+                default:
+                    Console.WriteLine("ERROR: unknown opcode: {0:X4}", opcode);
+                    break;
+            }
+
+            //make sure timers decrement at 60Hz regardless of clock speed
+            if (++cycleCount % timerInterval == 0)
+            {   
+                TickDelayTimer();
+                TickSoundTimer();
             }
         }
 
@@ -800,8 +898,6 @@ namespace ChocolateCHIP
             if (delayTimer > 0)
             {
                 delayTimer--;
-                Thread.Sleep(17);
-                this.drawFlag = true;
             }
         }
 
@@ -810,8 +906,6 @@ namespace ChocolateCHIP
             if (soundTimer > 0)
             {
                 soundTimer--;
-                Thread.Sleep(17);
-                this.drawFlag = true;
             }
         }
     }
