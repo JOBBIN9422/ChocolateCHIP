@@ -2,8 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Drawing;
+using System.Threading;
+using System.Windows.Input;
+using System.Windows.Forms;
 
-namespace ConsoleApp2
+namespace ChocolateCHIP
 {
     class Chip8
     {
@@ -45,6 +48,26 @@ namespace ConsoleApp2
               0xF0, 0x80, 0xF0, 0x80, 0x80  // F
         };
 
+        private Key[] keyBindings =
+        {
+              Key.X,
+              Key.D1,
+              Key.D2,
+              Key.D3,
+              Key.Q,
+              Key.W,
+              Key.E,
+              Key.A,
+              Key.S,
+              Key.D,
+              Key.Z,
+              Key.C,
+              Key.D4,
+              Key.R,
+              Key.F,
+              Key.V
+        };
+
         public Chip8()
         {
             //4K of memory (interpreter, fonts, program ROM, and RAM)
@@ -79,7 +102,6 @@ namespace ConsoleApp2
             {
                 //memory[i] = fontSet[i - 80];
                 memory[i] = fontSet[i];
-                //Console.WriteLine("mem [" + i + "] = " + memory[i]);
             }
 
             drawFlag = true; 
@@ -87,11 +109,16 @@ namespace ConsoleApp2
 
         public void LoadROM(string fileName)
         {
-            FileStream inputFS = new FileStream(fileName, FileMode.Open);
             MemoryStream ROMStream = new MemoryStream();
+            //FileStream inputFS = new FileStream(fileName, FileMode.Open);
+            //inputFS.CopyTo(ROMStream);
 
-            inputFS.CopyTo(ROMStream);
-            byte[] ROMDump = ROMStream.ToArray();
+            using (var inputStream = File.Open(fileName, FileMode.Open))
+            {
+                inputStream.CopyTo(ROMStream);
+            }
+
+                byte[] ROMDump = ROMStream.ToArray();
 
             for (int i = 0; i < ROMDump.Count(); i++)
             {
@@ -102,6 +129,21 @@ namespace ConsoleApp2
             }
         }
 
+        public Bitmap GetFrame()
+        {
+            return testBitmap;
+        }
+
+        public bool GetDrawFlag()
+        {
+            return drawFlag;
+        }
+
+        public void SetDrawFlag(bool drawFlag)
+        {
+            this.drawFlag = drawFlag;
+        }
+
         public void DebugRender()
         {
             for (int y = 0; y < 32; y++)
@@ -110,18 +152,18 @@ namespace ConsoleApp2
                 {
                     if (frame[(y * 64) + x] == 0)
                     {
-                        Console.Write(0);
+                        //Console.Write(0);
                         testBitmap.SetPixel(x, y, Color.Black);
                     }
                     else
                     {
-                        Console.Write(" ");
+                        //Console.Write(" ");
                         testBitmap.SetPixel(x, y, Color.White);
                     }
                 }
-                Console.WriteLine();
+                //Console.WriteLine();
             }
-            Console.WriteLine();
+            //Console.WriteLine();
         }
 
         public void printMemory()
@@ -137,6 +179,21 @@ namespace ConsoleApp2
 
         }
 
+        public void PollKeys()
+        {
+            for (int i = 0; i < keyBindings.Count(); i++)
+            {
+                if (Keyboard.IsKeyDown(keyBindings[i]))
+                {
+                    keyStates[i] = 1;
+                }
+                else
+                {
+                    keyStates[i] = 0;
+                }
+            }
+        }
+
         public void clearScreen()
         {
             for (int i = 0; i < 2048; i++)
@@ -149,8 +206,9 @@ namespace ConsoleApp2
         //pre-decrements the stack and sets the PC to the address at the top of stack
         public void Return()
         {
-            stackPointer--;
+            
             programCounter = stack[stackPointer];
+            stackPointer--;
         }
 
         public void JumpToAddr(ushort jumpAddr)
@@ -167,8 +225,9 @@ namespace ConsoleApp2
         //stores current PC on stack and jumps to subroutine address
         public void CallSubroutine(ushort subAddr)
         {
-            stack[stackPointer] = programCounter; //store current addr on stack
             stackPointer++;
+            stack[stackPointer] = programCounter; //store current addr on stack
+            
             programCounter = subAddr; //set program counter to subroutine address
         }
 
@@ -463,11 +522,12 @@ namespace ConsoleApp2
             byte regXIndex = (byte)((data & 0x0F00) >> 8);
             byte regYIndex = (byte)((data & 0x00F0) >> 4);
 
-            byte xCoord = vRegisters[regXIndex];
-            byte yCoord = vRegisters[regYIndex];
-            byte height = (byte)(data & 0x000F);
+            byte xCoord = (byte)(vRegisters[regXIndex] % 64);
+            byte yCoord = (byte)(vRegisters[regYIndex] % 32);
+            ushort height = (ushort)(data & 0x000F);
             byte pixel;
 
+            vRegisters[15] = 0;
             for (int y = 0; y < height; y++)
             {
                 pixel = memory[index + y];
@@ -536,8 +596,10 @@ namespace ConsoleApp2
 
         public void EmulateCycle()
         {
+            PollKeys();
             //fetch the current opcode indicated by the PC (opcodes are 2 bytes long so we must fetch 2 values)
             opcode = (ushort)((memory[programCounter] << 8) | memory[programCounter + 1]);
+            Console.WriteLine("opcode = {0:X}", opcode);
             ushort instrData = (ushort)(opcode & 0x0FFF);
 
             //prepare to read next instruction
@@ -731,17 +793,28 @@ namespace ConsoleApp2
                     }
                     break;
             }
+        }
 
-            //update timers
+        public void TickDelayTimer()
+        {
             if (delayTimer > 0)
             {
                 delayTimer--;
+                Thread.Sleep(17);
+                this.drawFlag = true;
             }
+        }
 
+        public void TickSoundTimer()
+        {
             if (soundTimer > 0)
             {
                 soundTimer--;
+                Thread.Sleep(17);
+                this.drawFlag = true;
             }
         }
     }
+
+    
 }

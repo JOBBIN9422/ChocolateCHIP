@@ -1,25 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace ConsoleApp2
+namespace ChocolateCHIP
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
         {
-            Chip8 chip8 = new Chip8();
-            chip8.Initialize();
-            chip8.LoadROM("particles.ch8");
-            chip8.printMemory();
-
-            while (true)
-            {
-                chip8.EmulateCycle();
-                chip8.DebugRender();
-                System.Threading.Thread.Sleep(100);
-                Console.Clear();
-            }
-
-            Console.Read();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
         }
     }
 }
