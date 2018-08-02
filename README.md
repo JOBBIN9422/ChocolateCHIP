@@ -5,3 +5,6 @@ This is a basic (i.e. vanilla instructions only) CHIP-8 interpreter. It is writt
 - Variable clock speed 
 - Color settings
 - Debugger - pause & step execution, view stack, PC, registers, etc. 
+
+# Screenshots
+![Screenshot](images/emuLogo.PNG)
