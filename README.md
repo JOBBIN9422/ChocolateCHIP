@@ -1,2 +1,7 @@
 # ChocolateCHIP
-CHIP-8 emulator in C# (not sure if this is really gonna get anywhere yet UwU)
+This is a basic (i.e. vanilla instructions only) CHIP-8 interpreter. It is written in C# and uses Windows Forms as a frontend.
+
+# Features
+- Variable clock speed 
+- Color settings
+- Debugger - pause & step execution, view stack, PC, registers, etc. 
