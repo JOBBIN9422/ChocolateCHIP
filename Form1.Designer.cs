@@ -51,7 +51,8 @@
             // 
             // frameBox
             // 
-            this.frameBox.Location = new System.Drawing.Point(12, 41);
+            this.frameBox.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.frameBox.Location = new System.Drawing.Point(15, 9);
             this.frameBox.Name = "frameBox";
             this.frameBox.Size = new System.Drawing.Size(640, 320);
             this.frameBox.TabIndex = 0;
@@ -61,7 +62,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(3, 338);
+            this.label1.Location = new System.Drawing.Point(3, 375);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(112, 16);
             this.label1.TabIndex = 1;
@@ -73,7 +74,7 @@
             this.debugCheckBox.Checked = true;
             this.debugCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.debugCheckBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.debugCheckBox.Location = new System.Drawing.Point(3, 381);
+            this.debugCheckBox.Location = new System.Drawing.Point(3, 418);
             this.debugCheckBox.Name = "debugCheckBox";
             this.debugCheckBox.Size = new System.Drawing.Size(131, 18);
             this.debugCheckBox.TabIndex = 2;
@@ -88,14 +89,14 @@
             this.debugTextBox.Location = new System.Drawing.Point(3, 3);
             this.debugTextBox.Multiline = true;
             this.debugTextBox.Name = "debugTextBox";
-            this.debugTextBox.Size = new System.Drawing.Size(184, 332);
+            this.debugTextBox.Size = new System.Drawing.Size(184, 369);
             this.debugTextBox.TabIndex = 3;
             // 
             // printDebugCheckBox
             // 
             this.printDebugCheckBox.AutoSize = true;
             this.printDebugCheckBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.printDebugCheckBox.Location = new System.Drawing.Point(3, 357);
+            this.printDebugCheckBox.Location = new System.Drawing.Point(3, 394);
             this.printDebugCheckBox.Name = "printDebugCheckBox";
             this.printDebugCheckBox.Size = new System.Drawing.Size(138, 18);
             this.printDebugCheckBox.TabIndex = 4;
@@ -105,7 +106,7 @@
             // resetButton
             // 
             this.resetButton.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.resetButton.Location = new System.Drawing.Point(3, 405);
+            this.resetButton.Location = new System.Drawing.Point(3, 442);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(181, 23);
             this.resetButton.TabIndex = 5;
@@ -116,7 +117,7 @@
             // stepButton
             // 
             this.stepButton.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stepButton.Location = new System.Drawing.Point(3, 434);
+            this.stepButton.Location = new System.Drawing.Point(3, 471);
             this.stepButton.Name = "stepButton";
             this.stepButton.Size = new System.Drawing.Size(181, 23);
             this.stepButton.TabIndex = 6;
@@ -126,7 +127,7 @@
             // 
             // memoryTextBox
             // 
-            this.memoryTextBox.Location = new System.Drawing.Point(3, 492);
+            this.memoryTextBox.Location = new System.Drawing.Point(3, 529);
             this.memoryTextBox.Name = "memoryTextBox";
             this.memoryTextBox.Size = new System.Drawing.Size(181, 20);
             this.memoryTextBox.TabIndex = 7;
@@ -134,7 +135,7 @@
             // viewMemoryButton
             // 
             this.viewMemoryButton.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.viewMemoryButton.Location = new System.Drawing.Point(3, 463);
+            this.viewMemoryButton.Location = new System.Drawing.Point(3, 500);
             this.viewMemoryButton.Name = "viewMemoryButton";
             this.viewMemoryButton.Size = new System.Drawing.Size(181, 23);
             this.viewMemoryButton.TabIndex = 8;
@@ -190,9 +191,9 @@
             this.flowLayoutPanel1.Controls.Add(this.openROMButton);
             this.flowLayoutPanel1.Controls.Add(this.SetClockSpeedButton);
             this.flowLayoutPanel1.Controls.Add(this.clockSpdUpDown);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(15, 335);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(441, 28);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(402, 28);
             this.flowLayoutPanel1.TabIndex = 12;
             // 
             // flowLayoutPanel2
@@ -207,17 +208,18 @@
             this.flowLayoutPanel2.Controls.Add(this.memoryTextBox);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(658, 6);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(192, 518);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(192, 559);
             this.flowLayoutPanel2.TabIndex = 13;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(860, 532);
+            this.ClientSize = new System.Drawing.Size(860, 567);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.frameBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "ChocolateCHIP";
             ((System.ComponentModel.ISupportInitialize)(this.frameBox)).EndInit();

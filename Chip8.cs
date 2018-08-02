@@ -236,6 +236,8 @@ namespace ChocolateCHIP
             ushort currOpcode = (ushort)((memory[programCounter] << 8) | memory[programCounter + 1]);
             debugInfo += String.Format("OP = {0:X4}{1}", currOpcode, Environment.NewLine);
 
+            debugInfo += String.Format("{0}DT = {1:X4}{2}ST = {3:X4}{4}", Environment.NewLine, delayTimer, Environment.NewLine, soundTimer, Environment.NewLine);
+
             debugInfo += String.Format("{0}Registers | Stack{1}-----------------------{2}", Environment.NewLine, Environment.NewLine, Environment.NewLine);
 
             string stackPoint = String.Empty;
