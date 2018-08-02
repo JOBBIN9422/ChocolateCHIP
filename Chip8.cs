@@ -25,8 +25,6 @@ namespace ChocolateCHIP
 
         private Random random;
 
-        private Bitmap frameBitmap;
-
         private string currFileName;
 
         private ushort[] stack;
@@ -95,7 +93,6 @@ namespace ChocolateCHIP
             this.frame = new byte[64 * 32];
 
             this.keyStates = new byte[16];
-            this.frameBitmap = new Bitmap(64, 32);
         }
 
         public void Initialize()
@@ -123,7 +120,6 @@ namespace ChocolateCHIP
             this.vRegisters = new byte[16];
             this.frame = new byte[64 * 32];
             this.keyStates = new byte[16];
-            this.frameBitmap = new Bitmap(64, 32);
 
             //reload font set
             for (int i = 0; i < 80; i++)
@@ -172,10 +168,6 @@ namespace ChocolateCHIP
             this.clockSpeedHz = clockSpeed;
         }
 
-        public Bitmap GetFrame()
-        {
-            return frameBitmap;
-        }
 
         public bool GetDrawFlag()
         {
@@ -193,23 +185,9 @@ namespace ChocolateCHIP
         }
 
 
-        //export the current frame data to a b&w bitmap 
-        public void RenderToBitmap()
+        public byte[] GetFrameBuffer()
         {
-            for (int y = 0; y < 32; y++)
-            {
-                for (int x = 0; x < 64; x++)
-                {
-                    if (frame[(y * 64) + x] == 0)
-                    {
-                        frameBitmap.SetPixel(x, y, Color.Black);
-                    }
-                    else
-                    {
-                        frameBitmap.SetPixel(x, y, Color.White);
-                    }
-                }
-            }
+            return frame;
         }
 
         //dump the contents of memory to the console 

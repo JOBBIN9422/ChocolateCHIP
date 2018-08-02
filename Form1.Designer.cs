@@ -84,6 +84,7 @@
             // debugTextBox
             // 
             this.debugTextBox.BackColor = System.Drawing.SystemColors.WindowText;
+            this.debugTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.debugTextBox.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.debugTextBox.ForeColor = System.Drawing.Color.Lime;
             this.debugTextBox.Location = new System.Drawing.Point(3, 3);
@@ -216,12 +217,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(885, 511);
+            this.ClientSize = new System.Drawing.Size(884, 511);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.frameBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
+            this.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Text = "ChocolateCHIP";
             ((System.ComponentModel.ISupportInitialize)(this.frameBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.clockSpdUpDown)).EndInit();

@@ -61,6 +61,26 @@ namespace ChocolateCHIP
             return destImage;
         }
 
+        public Bitmap GetFrameBitmap(byte[] frame)
+        {
+            Bitmap frameBitmap = new Bitmap(64, 32);
+            for (int y = 0; y < 32; y++)
+            {
+                for (int x = 0; x < 64; x++)
+                {
+                    if (frame[(y * 64) + x] == 0)
+                    {
+                        frameBitmap.SetPixel(x, y, Color.Black);
+                    }
+                    else
+                    {
+                        frameBitmap.SetPixel(x, y, Color.White);
+                    }
+                }
+            }
+            return ResizeImage(frameBitmap, 640, 320);
+        }
+
         public Form1()
         {
             chip8 = new Chip8();
@@ -108,8 +128,7 @@ namespace ChocolateCHIP
             
             if (chip8.GetDrawFlag())
             {
-                chip8.RenderToBitmap();
-                frameBox.Image = Form1.ResizeImage(chip8.GetFrame(), 640, 320);
+                frameBox.Image = GetFrameBitmap(chip8.GetFrameBuffer());
                 chip8.SetDrawFlag(false);
             }
         }
