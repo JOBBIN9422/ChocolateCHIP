@@ -42,7 +42,9 @@
             this.openROMDialog = new System.Windows.Forms.OpenFileDialog();
             this.openROMButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.colorComboBox = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.setThemeButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.frameBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.clockSpdUpDown)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
@@ -152,7 +154,7 @@
             0,
             0,
             0});
-            this.clockSpdUpDown.Location = new System.Drawing.Point(271, 3);
+            this.clockSpdUpDown.Location = new System.Drawing.Point(279, 3);
             this.clockSpdUpDown.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -167,9 +169,9 @@
             this.SetClockSpeedButton.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SetClockSpeedButton.Location = new System.Drawing.Point(116, 3);
             this.SetClockSpeedButton.Name = "SetClockSpeedButton";
-            this.SetClockSpeedButton.Size = new System.Drawing.Size(149, 20);
+            this.SetClockSpeedButton.Size = new System.Drawing.Size(157, 20);
             this.SetClockSpeedButton.TabIndex = 10;
-            this.SetClockSpeedButton.Text = "Set Clock Spd (Hz)";
+            this.SetClockSpeedButton.Text = "Set clock speed (Hz)";
             this.SetClockSpeedButton.UseVisualStyleBackColor = true;
             this.SetClockSpeedButton.Click += new System.EventHandler(this.SetClockSpeedButton_Click);
             // 
@@ -193,10 +195,21 @@
             this.flowLayoutPanel1.Controls.Add(this.openROMButton);
             this.flowLayoutPanel1.Controls.Add(this.SetClockSpeedButton);
             this.flowLayoutPanel1.Controls.Add(this.clockSpdUpDown);
+            this.flowLayoutPanel1.Controls.Add(this.setThemeButton);
+            this.flowLayoutPanel1.Controls.Add(this.colorComboBox);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(15, 332);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(402, 28);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(640, 31);
             this.flowLayoutPanel1.TabIndex = 12;
+            // 
+            // colorComboBox
+            // 
+            this.colorComboBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.colorComboBox.FormattingEnabled = true;
+            this.colorComboBox.Location = new System.Drawing.Point(503, 3);
+            this.colorComboBox.Name = "colorComboBox";
+            this.colorComboBox.Size = new System.Drawing.Size(121, 19);
+            this.colorComboBox.TabIndex = 12;
             // 
             // flowLayoutPanel2
             // 
@@ -212,6 +225,17 @@
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(214, 498);
             this.flowLayoutPanel2.TabIndex = 13;
+            // 
+            // setThemeButton
+            // 
+            this.setThemeButton.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.setThemeButton.Location = new System.Drawing.Point(405, 3);
+            this.setThemeButton.Name = "setThemeButton";
+            this.setThemeButton.Size = new System.Drawing.Size(92, 20);
+            this.setThemeButton.TabIndex = 13;
+            this.setThemeButton.Text = "Set theme";
+            this.setThemeButton.UseVisualStyleBackColor = true;
+            this.setThemeButton.Click += new System.EventHandler(this.setThemeButton_Click);
             // 
             // Form1
             // 
@@ -251,6 +275,8 @@
         private System.Windows.Forms.Button openROMButton;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.ComboBox colorComboBox;
+        private System.Windows.Forms.Button setThemeButton;
     }
 }
 

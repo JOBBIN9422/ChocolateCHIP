@@ -32,8 +32,8 @@ namespace ChocolateCHIP
         public static extern int PeekMessage(out NativeMessage message, IntPtr window, uint filterMin, uint filterMax, uint remove);
 
         private Chip8 chip8;
-        private Thread SoundTimerThread;
-        private Thread DelayTimerThread;
+        private Color foregroundColor;
+        private Color backgroundColor;
 
         //Scale a bitmap to a given size (used to scale CHIP-8's 64 x 32 frame to a viewable size)
         public static Bitmap ResizeImage(Image image, int width, int height)
@@ -70,11 +70,11 @@ namespace ChocolateCHIP
                 {
                     if (frame[(y * 64) + x] == 0)
                     {
-                        frameBitmap.SetPixel(x, y, Color.Black);
+                        frameBitmap.SetPixel(x, y, backgroundColor);
                     }
                     else
                     {
-                        frameBitmap.SetPixel(x, y, Color.White);
+                        frameBitmap.SetPixel(x, y, foregroundColor);
                     }
                 }
             }
@@ -89,6 +89,18 @@ namespace ChocolateCHIP
             Application.Idle += HandleApplicationIdle;
             InitializeComponent();
             clockSpdUpDown.Value = chip8.GetClockSpeedHz();
+
+            foregroundColor = Color.White;
+            backgroundColor = Color.Black;
+            colorComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            colorComboBox.Items.Insert(0, "White on black");
+            colorComboBox.Items.Insert(1, "Black on white");
+            colorComboBox.Items.Insert(2, "GameBoy");
+            colorComboBox.Items.Insert(3, "LED");
+            colorComboBox.Items.Insert(4, "Vapor");
+            colorComboBox.Items.Insert(5, "Mainframe");
+            colorComboBox.Items.Insert(6, "Slate");
+            colorComboBox.SelectedIndex = 0;
         }
 
         public void HandleApplicationIdle(object sender, EventArgs e)
@@ -184,6 +196,54 @@ namespace ChocolateCHIP
                     MessageBox.Show("Please select a valid CHIP-8 ROM.", "ROM Load Error");
                 }
             }
+        }
+
+        private void setThemeButton_Click(object sender, EventArgs e)
+        {
+            int themeIndex = colorComboBox.SelectedIndex;
+
+            switch (themeIndex)
+            {
+                case 0:
+                    foregroundColor = Color.White;
+                    backgroundColor = Color.Black;
+                    break;
+
+                case 1:
+                    foregroundColor = Color.Black;
+                    backgroundColor = Color.White;
+                    break;
+
+                case 2:
+                    foregroundColor = Color.DarkGreen;
+                    backgroundColor = Color.YellowGreen;
+                    break;
+
+                case 3:
+                    foregroundColor = Color.Red;
+                    backgroundColor = Color.Black;
+                    break;
+
+                case 4:
+                    foregroundColor = Color.DarkViolet;
+                    backgroundColor = Color.DarkTurquoise;
+                    break;
+
+                case 5:
+                    foregroundColor = Color.Lime;
+                    backgroundColor = Color.Black;
+                    break;
+
+                case 6:
+                    foregroundColor = Color.LightSlateGray;
+                    backgroundColor = Color.DarkSlateGray;
+                    break;
+
+                default:
+                    return;
+            }
+
+            frameBox.Image = GetFrameBitmap(chip8.GetFrameBuffer());
         }
     }
 }
