@@ -134,7 +134,10 @@ namespace ChocolateCHIP
                 debugTextBox.Text = chip8.GetDebugInfo();
 
                 //set the instruction list box index to the current instruction
-                instructionsListBox.SetSelected((chip8.GetPC() - 0x200), true);
+                if (instructionsListBox.Items.Count > 0)
+                {
+                    instructionsListBox.SetSelected((chip8.GetPC() - 0x200), true);
+                }
             }
             else
             {

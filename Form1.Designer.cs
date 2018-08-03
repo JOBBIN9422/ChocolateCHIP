@@ -46,16 +46,21 @@
             this.colorComboBox = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.instructionsListBox = new System.Windows.Forms.ListBox();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.frameBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.clockSpdUpDown)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // frameBox
             // 
             this.frameBox.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.frameBox.Location = new System.Drawing.Point(15, 9);
+            this.frameBox.Location = new System.Drawing.Point(12, 21);
             this.frameBox.Name = "frameBox";
             this.frameBox.Size = new System.Drawing.Size(640, 320);
             this.frameBox.TabIndex = 0;
@@ -65,7 +70,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(3, 326);
+            this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(124, 13);
             this.label1.TabIndex = 1;
@@ -77,7 +82,7 @@
             this.debugCheckBox.Checked = true;
             this.debugCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.debugCheckBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.debugCheckBox.Location = new System.Drawing.Point(3, 363);
+            this.debugCheckBox.Location = new System.Drawing.Point(3, 37);
             this.debugCheckBox.Name = "debugCheckBox";
             this.debugCheckBox.Size = new System.Drawing.Size(129, 15);
             this.debugCheckBox.TabIndex = 2;
@@ -93,14 +98,14 @@
             this.debugTextBox.Location = new System.Drawing.Point(3, 3);
             this.debugTextBox.Multiline = true;
             this.debugTextBox.Name = "debugTextBox";
-            this.debugTextBox.Size = new System.Drawing.Size(210, 320);
+            this.debugTextBox.Size = new System.Drawing.Size(210, 492);
             this.debugTextBox.TabIndex = 3;
             // 
             // printDebugCheckBox
             // 
             this.printDebugCheckBox.AutoSize = true;
             this.printDebugCheckBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.printDebugCheckBox.Location = new System.Drawing.Point(3, 342);
+            this.printDebugCheckBox.Location = new System.Drawing.Point(3, 16);
             this.printDebugCheckBox.Name = "printDebugCheckBox";
             this.printDebugCheckBox.Size = new System.Drawing.Size(136, 15);
             this.printDebugCheckBox.TabIndex = 4;
@@ -111,7 +116,7 @@
             // resetButton
             // 
             this.resetButton.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.resetButton.Location = new System.Drawing.Point(3, 384);
+            this.resetButton.Location = new System.Drawing.Point(145, 3);
             this.resetButton.Name = "resetButton";
             this.resetButton.Size = new System.Drawing.Size(210, 23);
             this.resetButton.TabIndex = 5;
@@ -122,7 +127,7 @@
             // stepButton
             // 
             this.stepButton.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.stepButton.Location = new System.Drawing.Point(3, 413);
+            this.stepButton.Location = new System.Drawing.Point(145, 32);
             this.stepButton.Name = "stepButton";
             this.stepButton.Size = new System.Drawing.Size(210, 23);
             this.stepButton.TabIndex = 6;
@@ -132,7 +137,7 @@
             // 
             // memoryTextBox
             // 
-            this.memoryTextBox.Location = new System.Drawing.Point(3, 471);
+            this.memoryTextBox.Location = new System.Drawing.Point(361, 32);
             this.memoryTextBox.Name = "memoryTextBox";
             this.memoryTextBox.Size = new System.Drawing.Size(210, 20);
             this.memoryTextBox.TabIndex = 7;
@@ -140,7 +145,7 @@
             // viewMemoryButton
             // 
             this.viewMemoryButton.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.viewMemoryButton.Location = new System.Drawing.Point(3, 442);
+            this.viewMemoryButton.Location = new System.Drawing.Point(361, 3);
             this.viewMemoryButton.Name = "viewMemoryButton";
             this.viewMemoryButton.Size = new System.Drawing.Size(210, 23);
             this.viewMemoryButton.TabIndex = 8;
@@ -188,7 +193,7 @@
             this.openROMButton.Name = "openROMButton";
             this.openROMButton.Size = new System.Drawing.Size(107, 20);
             this.openROMButton.TabIndex = 11;
-            this.openROMButton.Text = "Open ROM";
+            this.openROMButton.Text = "Load ROM";
             this.openROMButton.UseVisualStyleBackColor = true;
             this.openROMButton.Click += new System.EventHandler(this.openROMButton_Click);
             // 
@@ -199,7 +204,7 @@
             this.flowLayoutPanel1.Controls.Add(this.clockSpdUpDown);
             this.flowLayoutPanel1.Controls.Add(this.setThemeButton);
             this.flowLayoutPanel1.Controls.Add(this.colorComboBox);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(15, 332);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 344);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(640, 31);
             this.flowLayoutPanel1.TabIndex = 12;
@@ -227,16 +232,10 @@
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.Controls.Add(this.debugTextBox);
-            this.flowLayoutPanel2.Controls.Add(this.label1);
-            this.flowLayoutPanel2.Controls.Add(this.printDebugCheckBox);
-            this.flowLayoutPanel2.Controls.Add(this.debugCheckBox);
-            this.flowLayoutPanel2.Controls.Add(this.resetButton);
-            this.flowLayoutPanel2.Controls.Add(this.stepButton);
-            this.flowLayoutPanel2.Controls.Add(this.viewMemoryButton);
-            this.flowLayoutPanel2.Controls.Add(this.memoryTextBox);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(658, 6);
+            this.flowLayoutPanel2.Controls.Add(this.instructionsListBox);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(655, 18);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(214, 498);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(433, 498);
             this.flowLayoutPanel2.TabIndex = 13;
             // 
             // instructionsListBox
@@ -247,17 +246,65 @@
             this.instructionsListBox.ForeColor = System.Drawing.Color.Lime;
             this.instructionsListBox.FormattingEnabled = true;
             this.instructionsListBox.ItemHeight = 12;
-            this.instructionsListBox.Location = new System.Drawing.Point(878, 9);
+            this.instructionsListBox.Location = new System.Drawing.Point(219, 3);
             this.instructionsListBox.Name = "instructionsListBox";
-            this.instructionsListBox.Size = new System.Drawing.Size(223, 480);
+            this.instructionsListBox.Size = new System.Drawing.Size(205, 492);
             this.instructionsListBox.TabIndex = 14;
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Controls.Add(this.label1);
+            this.flowLayoutPanel3.Controls.Add(this.printDebugCheckBox);
+            this.flowLayoutPanel3.Controls.Add(this.debugCheckBox);
+            this.flowLayoutPanel3.Controls.Add(this.resetButton);
+            this.flowLayoutPanel3.Controls.Add(this.stepButton);
+            this.flowLayoutPanel3.Controls.Add(this.viewMemoryButton);
+            this.flowLayoutPanel3.Controls.Add(this.memoryTextBox);
+            this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(68, 381);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(581, 82);
+            this.flowLayoutPanel3.TabIndex = 15;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(13, 5);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(54, 11);
+            this.label2.TabIndex = 16;
+            this.label2.Text = "Display";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(656, 5);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(61, 11);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "Debugger";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(872, 5);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(89, 11);
+            this.label4.TabIndex = 18;
+            this.label4.Text = "Instructions";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1113, 511);
-            this.Controls.Add(this.instructionsListBox);
+            this.ClientSize = new System.Drawing.Size(1087, 521);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.flowLayoutPanel3);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.frameBox);
@@ -270,7 +317,10 @@
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -294,6 +344,10 @@
         private System.Windows.Forms.ComboBox colorComboBox;
         private System.Windows.Forms.Button setThemeButton;
         private System.Windows.Forms.ListBox instructionsListBox;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
 
