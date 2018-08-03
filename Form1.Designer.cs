@@ -235,7 +235,7 @@
             this.flowLayoutPanel2.Controls.Add(this.instructionsListBox);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(655, 18);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(433, 498);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(456, 498);
             this.flowLayoutPanel2.TabIndex = 13;
             // 
             // instructionsListBox
@@ -248,7 +248,7 @@
             this.instructionsListBox.ItemHeight = 12;
             this.instructionsListBox.Location = new System.Drawing.Point(219, 3);
             this.instructionsListBox.Name = "instructionsListBox";
-            this.instructionsListBox.Size = new System.Drawing.Size(205, 492);
+            this.instructionsListBox.Size = new System.Drawing.Size(226, 492);
             this.instructionsListBox.TabIndex = 14;
             // 
             // flowLayoutPanel3
@@ -300,7 +300,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1087, 521);
+            this.ClientSize = new System.Drawing.Size(1115, 521);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
