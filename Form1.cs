@@ -132,6 +132,9 @@ namespace ChocolateCHIP
             if (printDebugCheckBox.Checked)
             {
                 debugTextBox.Text = chip8.GetDebugInfo();
+
+                //set the instruction list box index to the current instruction
+                instructionsListBox.SetSelected((chip8.GetPC() - 0x200), true);
             }
             else
             {
@@ -149,6 +152,7 @@ namespace ChocolateCHIP
         {
             chip8.Reset();
             chip8.LoadROM(chip8.GetFileName());
+            instructionsListBox.DataSource = chip8.GetROMInstructions();
             if (printDebugCheckBox.Checked)
             {
                 debugTextBox.Text = chip8.GetDebugInfo();
@@ -189,6 +193,10 @@ namespace ChocolateCHIP
                 try
                 {
                     chip8.LoadROM(ROMName);
+                    if (printDebugCheckBox.Checked)
+                    {
+                        instructionsListBox.DataSource = chip8.GetROMInstructions();
+                    }
                     debugCheckBox.Checked = false;
                 }
                 catch (System.IO.IOException)
@@ -244,6 +252,18 @@ namespace ChocolateCHIP
             }
 
             frameBox.Image = GetFrameBitmap(chip8.GetFrameBuffer());
+        }
+
+        private void printDebugCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (printDebugCheckBox.Checked)
+            {
+                instructionsListBox.DataSource = chip8.GetROMInstructions();
+            }
+            else
+            {
+                instructionsListBox.DataSource = null;
+            }
         }
     }
 }

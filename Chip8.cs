@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace ChocolateCHIP
 {
@@ -26,6 +27,8 @@ namespace ChocolateCHIP
         private Random random;
 
         private string currFileName;
+
+        private List<byte> ROM;
 
         private ushort[] stack;
         private byte[] memory;
@@ -76,6 +79,7 @@ namespace ChocolateCHIP
         {
             random = new Random();
             currFileName = String.Empty;
+            ROM = new List<byte>();
             this.clockSpeedHz = 500;
             this.cycleCount = 0;
             this.timerInterval = clockSpeedHz / 60;
@@ -149,18 +153,50 @@ namespace ChocolateCHIP
 
             //copy rom byte-wise into array
             byte[] ROMDump = ROMStream.ToArray();
+            ROM.Clear();
 
             for (int i = 0; i < ROMDump.Count(); i++)
             {
                 //copy ROM into memory at program starting address
                 memory[i + 0x200] = ROMDump[i];
+                ROM.Add(ROMDump[i]); //add byte to ROM list for disassembly reference (not read by interpreter at runtime)
                 Console.WriteLine("ROM[{0:X4}] = {1:X4}\tMEM[{2:X4}] = {3:X4}", i, ROMDump[i], i + 0x200, memory[i + 0x200]);
             }
+        }
+
+        public List<string> GetROMInstructions()
+        {
+            List<string> ROMInstructions = new List<string>();
+            for (int i = 0; i < ROM.Count - 1; i++)
+            {
+                //disassemble each instruction from ROM (2 bytes each)
+                ushort currOpCode = (ushort)((ROM[i] << 8) | ROM[i + 1]);
+
+                //calculate the mem address of each instruction 
+                string currInstrAddr = String.Format("{0:X4} - ", i + 0x200);
+                string currInstr = Disassemble(currOpCode);
+
+                if (currInstr.Equals(String.Empty))
+                {
+                    ROMInstructions.Add(String.Empty);
+                }
+                else
+                {
+                    ROMInstructions.Add(currInstrAddr + Disassemble(currOpCode));
+                } 
+            }
+
+            return ROMInstructions;
         }
 
         public uint GetClockSpeedHz()
         {
             return clockSpeedHz;
+        }
+
+        public ushort GetPC()
+        {
+            return programCounter;
         }
 
         public void SetClockSpeedHz(uint clockSpeed)
@@ -212,6 +248,7 @@ namespace ChocolateCHIP
             debugInfo += String.Format("PC = {0:X4}{1}SP = {2:X4}{3}I  = {4:X4}{5}", programCounter, Environment.NewLine, stackPointer, Environment.NewLine, index, Environment.NewLine);
 
             ushort currOpcode = (ushort)((memory[programCounter] << 8) | memory[programCounter + 1]);
+            //Console.WriteLine(Disassemble(currOpcode));
             debugInfo += String.Format("OP = {0:X4}{1}", currOpcode, Environment.NewLine);
 
             debugInfo += String.Format("{0}DT = {1:X4}{2}ST = {3:X4}{4}", Environment.NewLine, delayTimer, Environment.NewLine, soundTimer, Environment.NewLine);
@@ -668,6 +705,178 @@ namespace ChocolateCHIP
                 return;
             }
 
+        }
+
+        public string Disassemble(ushort currOpCode)
+        {
+            string instructionStr = String.Empty;
+            byte x     = (byte)  ((currOpCode & 0x0F00) >> 8);
+            byte y     = (byte)  ((currOpCode & 0x00F0) >> 4);
+            ushort nnn = (ushort) (currOpCode & 0x0FFF);
+            byte kk    = (byte)   (currOpCode & 0x00FF);
+            byte n     = (byte)   (currOpCode & 0x000F);
+
+            switch (currOpCode & 0xF000)
+            {
+                case 0x0000:
+                    switch (currOpCode & 0x000F)
+                    {
+                        case 0x0000:
+                            instructionStr = "CLS";
+                            break;
+
+                        case 0x000E:
+                            instructionStr = "RET";
+                            break;
+                    }
+                    break;
+
+                case 0x1000:
+                    instructionStr = String.Format("JP {0:X3}", nnn);
+                    break;
+
+                case 0x2000:
+                    instructionStr = String.Format("CALL {0:X3}", nnn);
+                    break;
+
+                case 0x3000:
+                    instructionStr = String.Format("SE V[{0:X1}], {1:X2}", x, kk);
+                    break;
+
+                case 0x4000:
+                    instructionStr = String.Format("SNE V[{0:X1}], {1:X2}", x, kk);
+                    break;
+
+                case 0x5000:
+                    instructionStr = String.Format("SE V[{0:X1}], V[{1:X1}]", x, y);
+                    break;
+
+                case 0x6000:
+                    instructionStr = String.Format("LD V[{0:X1}], {1:X2}", x, kk);
+                    break;
+
+                case 0x7000:
+                    instructionStr = String.Format("ADD V[{0:X1}], {1:X2}", x, kk);
+                    break;
+
+                case 0x8000:
+                    //instructionStr = String.Format("LD V[{0:X1}], V[{1:X1}]", x, y);
+                    switch (currOpCode & 0x000F)
+                    {
+                        case 0x0000:
+                            instructionStr = String.Format("LD V[{0:X1}], V[{1:X1}]", x, y);
+                            break;
+                            
+                        case 0x0001:
+                            instructionStr = String.Format("OR V[{0:X1}], V[{1:X1}]", x, y);
+                            break;
+
+                        case 0x0002:
+                            instructionStr = String.Format("AND V[{0:X1}], V[{1:X1}]", x, y);
+                            break;
+
+                        case 0x0003:
+                            instructionStr = String.Format("XOR V[{0:X1}], V[{1:X1}]", x, y);
+                            break;
+
+                        case 0x0004:
+                            instructionStr = String.Format("ADD V[{0:X1}], V[{1:X1}]", x, y);
+                            break;
+
+                        case 0x0005:
+                            instructionStr = String.Format("SUB V[{0:X1}], V[{1:X1}]", x, y);
+                            break;
+
+                        case 0x0006:
+                            instructionStr = String.Format("SHR V[{0:X1}]", x);
+                            break;
+
+                        case 0x0007:
+                            instructionStr = String.Format("SUBN V[{0:X1}], V[{1:X1}]", x, y);
+                            break;
+
+                        case 0x000E:
+                            instructionStr = String.Format("SHL V[{0:X1}]", x);
+                            break;
+                    }
+                    break;
+
+                case 0x9000:
+                    instructionStr = String.Format("SNE V[{0:X1}], V[{1:X1}]", x, y);
+                    break;
+
+                case 0xA000:
+                    instructionStr = String.Format("LD I, {0:X3}", nnn);
+                    break;
+
+                case 0xB000:
+                    instructionStr = String.Format("JP V[0], {0:X3}", nnn);
+                    break;
+
+                case 0xC000:
+                    instructionStr = String.Format("RND V[{0:X1}], {1:X2}", x, kk);
+                    break;
+
+                case 0xD000:
+                    instructionStr = String.Format("DRW V[{0:X1}], V[{1:X1}], {2:X1}", x, y, n);
+                    break;
+
+                case 0xE000:
+                    //instructionStr = String.Format("SKP V[{0:X1}]", x);
+                    switch (currOpCode & 0x00FF)
+                    {
+                        case 0x009E:
+                            instructionStr = String.Format("SKP V[{0:X1}]", x);
+                            break;
+
+                        case 0x00A1:
+                            instructionStr = String.Format("SKNP V[{0:X1}]", x);
+                            break;
+                    }
+                    break;
+
+                case 0xF000:
+                    switch (currOpCode & 0x00FF)
+                    {
+                        case 0x0007:
+                            instructionStr = String.Format("LD V[{0:X1}], DT", x);
+                            break;
+
+                        case 0x000A:
+                            instructionStr = String.Format("LD V[{0:X1}], K", x);
+                            break;
+
+                        case 0x0015:
+                            instructionStr = String.Format("LD DT, V[{0:X1}]", x);
+                            break;
+
+                        case 0x0018:
+                            instructionStr = String.Format("LD ST, V[{0:X1}]", x);
+                            break;
+
+                        case 0x001E:
+                            instructionStr = String.Format("ADD I, V[{0:X1}]", x);
+                            break;
+
+                        case 0x0029:
+                            instructionStr = String.Format("LD F, V[{0:X1}]", x);
+                            break;
+
+                        case 0x0033:
+                            instructionStr = String.Format("LD B, V[{0:X1}]", x);
+                            break;
+
+                        case 0x0055:
+                            instructionStr = String.Format("LD MEM[I], V[{0:X1}]", x);
+                            break;
+
+                        case 0x0065:
+                            instructionStr = String.Format("LD V[{0:X1}], MEM[I]", x);
+                            break;
+                    }
+                    break;
+            }
+            return instructionStr;
         }
 
         public void EmulateCycle()

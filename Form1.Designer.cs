@@ -42,9 +42,10 @@
             this.openROMDialog = new System.Windows.Forms.OpenFileDialog();
             this.openROMButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.setThemeButton = new System.Windows.Forms.Button();
             this.colorComboBox = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.setThemeButton = new System.Windows.Forms.Button();
+            this.instructionsListBox = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.frameBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.clockSpdUpDown)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
@@ -105,6 +106,7 @@
             this.printDebugCheckBox.TabIndex = 4;
             this.printDebugCheckBox.Text = "Print debug info";
             this.printDebugCheckBox.UseVisualStyleBackColor = true;
+            this.printDebugCheckBox.CheckedChanged += new System.EventHandler(this.printDebugCheckBox_CheckedChanged);
             // 
             // resetButton
             // 
@@ -202,6 +204,17 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(640, 31);
             this.flowLayoutPanel1.TabIndex = 12;
             // 
+            // setThemeButton
+            // 
+            this.setThemeButton.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.setThemeButton.Location = new System.Drawing.Point(405, 3);
+            this.setThemeButton.Name = "setThemeButton";
+            this.setThemeButton.Size = new System.Drawing.Size(92, 20);
+            this.setThemeButton.TabIndex = 13;
+            this.setThemeButton.Text = "Set theme";
+            this.setThemeButton.UseVisualStyleBackColor = true;
+            this.setThemeButton.Click += new System.EventHandler(this.setThemeButton_Click);
+            // 
             // colorComboBox
             // 
             this.colorComboBox.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -226,22 +239,25 @@
             this.flowLayoutPanel2.Size = new System.Drawing.Size(214, 498);
             this.flowLayoutPanel2.TabIndex = 13;
             // 
-            // setThemeButton
+            // instructionsListBox
             // 
-            this.setThemeButton.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.setThemeButton.Location = new System.Drawing.Point(405, 3);
-            this.setThemeButton.Name = "setThemeButton";
-            this.setThemeButton.Size = new System.Drawing.Size(92, 20);
-            this.setThemeButton.TabIndex = 13;
-            this.setThemeButton.Text = "Set theme";
-            this.setThemeButton.UseVisualStyleBackColor = true;
-            this.setThemeButton.Click += new System.EventHandler(this.setThemeButton_Click);
+            this.instructionsListBox.BackColor = System.Drawing.Color.Black;
+            this.instructionsListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.instructionsListBox.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.instructionsListBox.ForeColor = System.Drawing.Color.Lime;
+            this.instructionsListBox.FormattingEnabled = true;
+            this.instructionsListBox.ItemHeight = 12;
+            this.instructionsListBox.Location = new System.Drawing.Point(878, 9);
+            this.instructionsListBox.Name = "instructionsListBox";
+            this.instructionsListBox.Size = new System.Drawing.Size(223, 480);
+            this.instructionsListBox.TabIndex = 14;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 511);
+            this.ClientSize = new System.Drawing.Size(1113, 511);
+            this.Controls.Add(this.instructionsListBox);
             this.Controls.Add(this.flowLayoutPanel2);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.frameBox);
@@ -277,6 +293,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.ComboBox colorComboBox;
         private System.Windows.Forms.Button setThemeButton;
+        private System.Windows.Forms.ListBox instructionsListBox;
     }
 }
 
