@@ -299,8 +299,9 @@ namespace ChocolateCHIP
         //pre-decrements the stack and sets the PC to the address at the top of stack
         public void Return()
         {
-            programCounter = stack[stackPointer];
             stackPointer--;
+            programCounter = stack[stackPointer];
+            
         }
 
         //Overwrite the PC with the requested address
@@ -319,8 +320,9 @@ namespace ChocolateCHIP
         public void CallSubroutine(ushort subAddr)
         {
 
-            stackPointer++;
+            
             stack[stackPointer] = programCounter; //store current addr on stack
+            stackPointer++;
             programCounter = subAddr; //set program counter to subroutine address
         }
 
